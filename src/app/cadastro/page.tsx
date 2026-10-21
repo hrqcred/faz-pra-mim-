@@ -1,23 +1,65 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { createClient } from "@/lib/supabase/client";
 
 type TipoConta = "comprador" | "vendedor";
 
 export default function CadastroPage() {
+  const router = useRouter();
   const [tipo, setTipo] = useState<TipoConta>("comprador");
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
   const [aceitaTermos, setAceitaTermos] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [erro, setErro] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: integrar com backend
+    setErro("");
+
+    if (senha !== confirmarSenha) {
+      setErro("As senhas não coincidem.");
+      return;
+    }
+
+    setLoading(true);
+    const supabase = createClient();
+
+    const { error } = await supabase.auth.signUp({
+      email,
+      password: senha,
+      options: {
+        data: { nome, tipo },
+      },
+    });
+
+    if (error) {
+      setErro(error.message === "User already registered"
+        ? "Este e-mail já está cadastrado."
+        : error.message);
+      setLoading(false);
+      return;
+    }
+
+    router.push("/cadastro/confirmar");
+  };
+
+  const handleGoogle = async () => {
+    const supabase = createClient();
+    await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+        queryParams: { access_type: "offline", prompt: "consent" },
+      },
+    });
   };
 
   return (
@@ -32,7 +74,6 @@ export default function CadastroPage() {
             </p>
           </div>
 
-          {/* Tipo de conta */}
           <div className="mb-6 grid grid-cols-2 gap-3">
             <button
               type="button"
@@ -70,7 +111,12 @@ export default function CadastroPage() {
             </button>
           </div>
 
-          {/* Form */}
+          {erro && (
+            <div className="mb-4 rounded-lg bg-red-50 dark:bg-red-950/30 px-4 py-3 text-sm text-red-600 dark:text-red-400">
+              {erro}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="mb-1.5 block text-xs font-medium text-muted">Nome completo</label>
@@ -102,10 +148,10 @@ export default function CadastroPage() {
                 type="password"
                 value={senha}
                 onChange={(e) => setSenha(e.target.value)}
-                placeholder="Mínimo 8 caracteres"
+                placeholder="Mínimo 6 caracteres"
                 className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted/50 focus:border-primary"
                 required
-                minLength={8}
+                minLength={6}
               />
             </div>
 
@@ -118,21 +164,9 @@ export default function CadastroPage() {
                 placeholder="Repita a senha"
                 className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted/50 focus:border-primary"
                 required
-                minLength={8}
+                minLength={6}
               />
             </div>
-
-            {tipo === "vendedor" && (
-              <div>
-                <label className="mb-1.5 block text-xs font-medium text-muted">CPF ou CNPJ</label>
-                <input
-                  type="text"
-                  placeholder="000.000.000-00"
-                  className="w-full rounded-xl border border-border bg-surface px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted/50 focus:border-primary"
-                />
-                <p className="mt-1 text-[11px] text-muted">Necessário para receber pagamentos</p>
-              </div>
-            )}
 
             <label className="flex items-start gap-2.5 pt-2">
               <input
@@ -151,21 +185,23 @@ export default function CadastroPage() {
 
             <button
               type="submit"
-              className="w-full rounded-xl bg-primary py-3 text-sm font-semibold text-white shadow-lg shadow-primary/20 transition-all hover:shadow-xl"
+              disabled={loading}
+              className="w-full rounded-xl bg-primary py-3 text-sm font-semibold text-white shadow-lg shadow-primary/20 transition-all hover:shadow-xl disabled:opacity-50"
             >
-              Criar conta como {tipo === "comprador" ? "comprador" : "vendedor"}
+              {loading ? "Criando conta..." : `Criar conta como ${tipo}`}
             </button>
           </form>
 
-          {/* Divider */}
           <div className="my-6 flex items-center gap-3">
             <div className="h-px flex-1 bg-border" />
             <span className="text-xs text-muted">ou</span>
             <div className="h-px flex-1 bg-border" />
           </div>
 
-          {/* Social */}
-          <button className="mb-3 flex w-full items-center justify-center gap-2 rounded-xl border border-border py-3 text-sm font-medium transition-colors hover:bg-background">
+          <button
+            onClick={handleGoogle}
+            className="mb-3 flex w-full items-center justify-center gap-2 rounded-xl border border-border py-3 text-sm font-medium transition-colors hover:bg-background"
+          >
             <svg width="18" height="18" viewBox="0 0 24 24">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
               <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />

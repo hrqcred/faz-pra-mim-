@@ -1,10 +1,38 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import type { User } from "@supabase/supabase-js";
 
 export function Header() {
+  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    setUser(null);
+    router.push("/");
+    router.refresh();
+  };
+
+  const userInitials = user?.user_metadata?.nome
+    ? (user.user_metadata.nome as string).split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase()
+    : "U";
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-surface/80 backdrop-blur-md">
@@ -37,18 +65,35 @@ export function Header() {
           >
             Ranking
           </Link>
-          <Link
-            href="/login"
-            className="text-sm font-medium text-muted transition-colors hover:text-foreground"
-          >
-            Entrar
-          </Link>
-          <Link
-            href="/cadastro"
-            className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary/90"
-          >
-            Criar conta
-          </Link>
+
+          {user ? (
+            <div className="flex items-center gap-3">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/15 text-xs font-bold text-primary">
+                {userInitials}
+              </div>
+              <button
+                onClick={handleLogout}
+                className="text-sm font-medium text-muted transition-colors hover:text-foreground"
+              >
+                Sair
+              </button>
+            </div>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="text-sm font-medium text-muted transition-colors hover:text-foreground"
+              >
+                Entrar
+              </Link>
+              <Link
+                href="/cadastro"
+                className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary/90"
+              >
+                Criar conta
+              </Link>
+            </>
+          )}
         </nav>
 
         <button
@@ -80,41 +125,36 @@ export function Header() {
       {menuOpen && (
         <nav className="border-t border-border bg-surface px-4 py-3 md:hidden">
           <div className="flex flex-col gap-3">
-            <Link
-              href="/catalogo"
-              className="text-sm font-medium"
-              onClick={() => setMenuOpen(false)}
-            >
+            <Link href="/catalogo" className="text-sm font-medium" onClick={() => setMenuOpen(false)}>
               Catálogo
             </Link>
-            <Link
-              href="#como-funciona"
-              className="text-sm font-medium"
-              onClick={() => setMenuOpen(false)}
-            >
+            <Link href="#como-funciona" className="text-sm font-medium" onClick={() => setMenuOpen(false)}>
               Como funciona
             </Link>
-            <Link
-              href="#ranking"
-              className="text-sm font-medium"
-              onClick={() => setMenuOpen(false)}
-            >
+            <Link href="#ranking" className="text-sm font-medium" onClick={() => setMenuOpen(false)}>
               Ranking
             </Link>
-            <Link
-              href="/login"
-              className="text-sm font-medium"
-              onClick={() => setMenuOpen(false)}
-            >
-              Entrar
-            </Link>
-            <Link
-              href="/cadastro"
-              className="mt-1 rounded-lg bg-primary px-4 py-2 text-center text-sm font-semibold text-white"
-              onClick={() => setMenuOpen(false)}
-            >
-              Criar conta
-            </Link>
+            {user ? (
+              <button
+                onClick={() => { handleLogout(); setMenuOpen(false); }}
+                className="text-left text-sm font-medium text-red-500"
+              >
+                Sair
+              </button>
+            ) : (
+              <>
+                <Link href="/login" className="text-sm font-medium" onClick={() => setMenuOpen(false)}>
+                  Entrar
+                </Link>
+                <Link
+                  href="/cadastro"
+                  className="mt-1 rounded-lg bg-primary px-4 py-2 text-center text-sm font-semibold text-white"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Criar conta
+                </Link>
+              </>
+            )}
           </div>
         </nav>
       )}
