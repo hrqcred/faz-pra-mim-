@@ -37,18 +37,48 @@ export function ServicoCard({ servico }: { servico: Servico }) {
       href={`/catalogo/${servico.id}`}
       className="group flex flex-col overflow-hidden rounded-xl border border-border bg-surface transition-all hover:shadow-lg hover:border-primary/30"
     >
-      <div className="relative aspect-video bg-gradient-to-br from-primary/5 to-primary/10 p-6 flex items-center justify-center">
-        <div className="text-center">
-          <div className={`mx-auto mb-2 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br ${avatarGradient(servico.vendedor.nome)} text-xl font-bold text-white shadow-lg`}>
-            {servico.vendedor.avatar}
+      <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-primary/5 to-primary/10">
+        {servico.capaImg ? (
+          <img
+            src={servico.capaImg}
+            alt={servico.titulo}
+            className="h-full w-full object-cover"
+            loading="lazy"
+          />
+        ) : (
+          <div className="flex h-full items-center justify-center p-6">
+            <div className="text-center">
+              {servico.vendedor.fotoUrl ? (
+                <img
+                  src={servico.vendedor.fotoUrl}
+                  alt={servico.vendedor.nome}
+                  className="mx-auto mb-2 h-16 w-16 rounded-full object-cover shadow-lg"
+                  loading="lazy"
+                />
+              ) : (
+                <div className={`mx-auto mb-2 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br ${avatarGradient(servico.vendedor.nome)} text-xl font-bold text-white shadow-lg`}>
+                  {servico.vendedor.avatar}
+                </div>
+              )}
+              <p className="text-xs font-medium text-foreground">{servico.vendedor.nome}</p>
+            </div>
           </div>
-          <p className="text-xs font-medium text-foreground">{servico.vendedor.nome}</p>
-        </div>
+        )}
         {servico.destaque && (
-          <span className="absolute right-3 top-3 rounded-md bg-accent px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white">
+          <span className="absolute right-3 top-3 rounded-md bg-accent px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
             Destaque
           </span>
         )}
+        <div className="absolute bottom-2 left-2 flex items-center gap-1.5 rounded-full bg-black/60 px-2 py-1 backdrop-blur-sm">
+          {servico.vendedor.fotoUrl ? (
+            <img src={servico.vendedor.fotoUrl} alt="" className="h-5 w-5 rounded-full object-cover" loading="lazy" />
+          ) : (
+            <div className={`flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br ${avatarGradient(servico.vendedor.nome)} text-[8px] font-bold text-white`}>
+              {servico.vendedor.avatar}
+            </div>
+          )}
+          <span className="text-[11px] font-medium text-white">{servico.vendedor.nome}</span>
+        </div>
       </div>
 
       <div className="flex flex-1 flex-col p-4">

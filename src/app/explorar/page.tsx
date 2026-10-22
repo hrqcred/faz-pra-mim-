@@ -9,7 +9,7 @@ import { ServicoCard } from "@/components/ServicoCard";
 
 type Ordenacao = "relevancia" | "preco_menor" | "preco_maior" | "nota" | "mais_vendidos" | "novos";
 
-const categorias = ["Todas", "Vídeo Comercial", "Depoimento", "UGC", "VSL", "Narração", "Vídeo Editado", "Vídeo com Cenário"];
+const categorias = ["Todas", "Vídeo Comercial", "Depoimento", "UGC", "VSL", "Narração", "Vídeo Editado"];
 const faixasPreco = [
   { label: "Qualquer preço", min: 0, max: Infinity },
   { label: "Até R$ 50", min: 0, max: 50 },
