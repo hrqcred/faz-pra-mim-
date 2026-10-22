@@ -74,20 +74,55 @@ export function ServicoDetalheClient({ servico }: { servico: Servico }) {
                 </div>
               </div>
 
-              <div className="mb-6 grid grid-cols-2 gap-2">
-                <div className="col-span-2 flex aspect-video items-center justify-center rounded-xl bg-gradient-to-br from-primary/10 to-primary/5">
-                  <div className="text-center">
-                    <svg className="mx-auto mb-2 text-primary/40" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z" />
-                    </svg>
-                    <p className="text-sm text-muted">Preview do vídeo</p>
-                  </div>
+              <div className="mb-6">
+                <div className="relative aspect-video overflow-hidden rounded-xl bg-gradient-to-br from-primary/10 to-primary/5">
+                  {servico.capaImg ? (
+                    <img
+                      src={servico.capaImg.replace("-300x207", "")}
+                      alt={servico.titulo}
+                      className="h-full w-full object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : servico.vendedor.fotoUrl ? (
+                    <img
+                      src={servico.vendedor.fotoUrl.replace("-150x150", "")}
+                      alt={servico.vendedor.nome}
+                      className="h-full w-full object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center">
+                      <div className="flex h-24 w-24 items-center justify-center rounded-full bg-primary/15 text-3xl font-bold text-primary">
+                        {servico.vendedor.avatar}
+                      </div>
+                    </div>
+                  )}
                 </div>
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="flex aspect-video items-center justify-center rounded-lg bg-surface border border-border">
-                    <span className="text-xs text-muted">Foto {i}</span>
+                {servico.vendedor.fotoUrl && servico.capaImg && (
+                  <div className="mt-2 grid grid-cols-4 gap-2">
+                    <div className="relative aspect-video overflow-hidden rounded-lg border border-border">
+                      <img
+                        src={servico.vendedor.fotoUrl.replace("-150x150", "")}
+                        alt={servico.vendedor.nome}
+                        className="h-full w-full object-cover"
+                        referrerPolicy="no-referrer"
+                      />
+                    </div>
+                    <div className="relative aspect-video overflow-hidden rounded-lg border border-border">
+                      <img
+                        src={servico.capaImg}
+                        alt={servico.titulo}
+                        className="h-full w-full object-cover"
+                        referrerPolicy="no-referrer"
+                      />
+                    </div>
+                    {[3, 4].map((i) => (
+                      <div key={i} className="flex aspect-video items-center justify-center rounded-lg bg-surface border border-border">
+                        <span className="text-xs text-muted">Foto {i}</span>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                )}
               </div>
 
               <div className="mb-4 flex gap-1 border-b border-border">
@@ -267,7 +302,7 @@ export function ServicoDetalheClient({ servico }: { servico: Servico }) {
                 </div>
 
                 <Link
-                  href="/cadastro"
+                  href={`/pedido/novo?servico=${servico.id}&qtd=${quantidade}`}
                   className="mb-3 block w-full rounded-xl bg-primary py-3 text-center text-sm font-semibold text-white shadow-lg shadow-primary/20 transition-all hover:shadow-xl"
                 >
                   Comprar agora — R$ {total.toFixed(2).replace(".", ",")}

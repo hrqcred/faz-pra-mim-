@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { createClient } from "@/lib/supabase/client";
 
 const avatarGradients = [
   "from-rose-400 to-pink-600",
@@ -19,63 +21,101 @@ function avatarGradient(name: string) {
   return avatarGradients[Math.abs(hash) % avatarGradients.length];
 }
 
-interface Conversa {
-  id: string;
-  nome: string;
-  avatar: string;
-  ultimaMensagem: string;
-  tempo: string;
-  naoLidas: number;
-  online: boolean;
-}
-
-interface Mensagem {
-  id: string;
-  de: "eu" | "outro";
-  texto: string;
-  hora: string;
-}
-
-const conversasFake: Conversa[] = [
-  { id: "1", nome: "Igor L.", avatar: "IL", ultimaMensagem: "O vídeo ficou pronto! Vou enviar aqui.", tempo: "2 min", naoLidas: 2, online: true },
-  { id: "2", nome: "Amanda R.", avatar: "AR", ultimaMensagem: "Perfeito, pode começar a produção.", tempo: "1h", naoLidas: 0, online: true },
-  { id: "3", nome: "Jonathan A.", avatar: "JA", ultimaMensagem: "Aceito sim! Me manda o briefing completo.", tempo: "3h", naoLidas: 1, online: false },
-  { id: "4", nome: "Camila R.", avatar: "CR", ultimaMensagem: "Obrigada pela avaliação! 🙏", tempo: "1 dia", naoLidas: 0, online: false },
-  { id: "5", nome: "Monique F.", avatar: "MF", ultimaMensagem: "Consigo entregar até quinta, tudo bem?", tempo: "2 dias", naoLidas: 0, online: false },
-];
-
-const mensagensFake: Record<string, Mensagem[]> = {
-  "1": [
-    { id: "m1", de: "eu", texto: "Oi Igor, tudo bem? Queria saber como está o vídeo.", hora: "14:20" },
-    { id: "m2", de: "outro", texto: "Fala! Tudo certo, estou finalizando a edição agora.", hora: "14:22" },
-    { id: "m3", de: "outro", texto: "Ficou muito bom, acho que vai gostar do resultado.", hora: "14:22" },
-    { id: "m4", de: "eu", texto: "Ótimo! Mal posso esperar pra ver 😄", hora: "14:25" },
-    { id: "m5", de: "outro", texto: "O vídeo ficou pronto! Vou enviar aqui.", hora: "14:30" },
-  ],
-  "2": [
-    { id: "m1", de: "outro", texto: "Oi! Vi que você fez uma solicitação de depoimento.", hora: "10:00" },
-    { id: "m2", de: "eu", texto: "Sim! Preciso de algo bem natural, estilo conversa.", hora: "10:05" },
-    { id: "m3", de: "outro", texto: "Entendi perfeitamente. Posso gravar amanhã.", hora: "10:08" },
-    { id: "m4", de: "eu", texto: "Perfeito, pode começar a produção.", hora: "10:10" },
-  ],
-  "3": [
-    { id: "m1", de: "eu", texto: "Oi Jonathan! Vi que você faz UGC, tem interesse nesse pedido?", hora: "09:00" },
-    { id: "m2", de: "outro", texto: "Aceito sim! Me manda o briefing completo.", hora: "12:30" },
-  ],
-};
-
 export default function MensagensPage() {
-  const [conversaAtiva, setConversaAtiva] = useState<string | null>("1");
+  const router = useRouter();
+  const [userId, setUserId] = useState<string | null>(null);
+  const [conversas, setConversas] = useState<any[]>([]);
+  const [conversaAtiva, setConversaAtiva] = useState<string | null>(null);
+  const [mensagens, setMensagens] = useState<any[]>([]);
   const [novaMensagem, setNovaMensagem] = useState("");
   const [showLista, setShowLista] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const mensagens = conversaAtiva ? mensagensFake[conversaAtiva] ?? [] : [];
-  const conversaSelecionada = conversasFake.find((c) => c.id === conversaAtiva);
+  useEffect(() => {
+    const supabase = createClient();
+    if (!supabase) return;
 
-  const enviar = () => {
-    if (!novaMensagem.trim()) return;
+    async function load() {
+      const { data: { user } } = await supabase!.auth.getUser();
+      if (!user) { router.push("/login"); return; }
+      setUserId(user.id);
+
+      const { data } = await supabase!
+        .from("conversations")
+        .select("*, user1:user1_id(id, nome, avatar_url), user2:user2_id(id, nome, avatar_url)")
+        .or(`user1_id.eq.${user.id},user2_id.eq.${user.id}`)
+        .order("updated_at", { ascending: false });
+
+      if (data) setConversas(data);
+      setLoading(false);
+    }
+
+    load();
+  }, [router]);
+
+  useEffect(() => {
+    if (!conversaAtiva) return;
+    const supabase = createClient();
+    if (!supabase) return;
+
+    async function loadMessages() {
+      const { data } = await supabase!
+        .from("messages")
+        .select("*, sender:sender_id(nome)")
+        .eq("conversation_id", conversaAtiva)
+        .order("created_at", { ascending: true });
+
+      if (data) setMensagens(data);
+    }
+
+    loadMessages();
+
+    const channel = supabase.channel(`messages:${conversaAtiva}`)
+      .on("postgres_changes", {
+        event: "INSERT",
+        schema: "public",
+        table: "messages",
+        filter: `conversation_id=eq.${conversaAtiva}`,
+      }, (payload) => {
+        setMensagens((prev) => [...prev, payload.new]);
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, [conversaAtiva]);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [mensagens]);
+
+  function getOutro(conversa: any) {
+    if (!userId) return { nome: "...", id: "" };
+    const outro = conversa.user1?.id === userId ? conversa.user2 : conversa.user1;
+    return outro || { nome: "Usuário", id: "" };
+  }
+
+  async function enviar() {
+    if (!novaMensagem.trim() || !conversaAtiva || !userId) return;
+    const supabase = createClient();
+    if (!supabase) return;
+
+    const texto = novaMensagem.trim();
     setNovaMensagem("");
-  };
+
+    await supabase.from("messages").insert({
+      conversation_id: conversaAtiva,
+      sender_id: userId,
+      texto,
+    });
+
+    await supabase.from("conversations").update({
+      ultima_mensagem: texto,
+      updated_at: new Date().toISOString(),
+    }).eq("id", conversaAtiva);
+  }
+
+  const conversaSelecionada = conversas.find((c) => c.id === conversaAtiva);
 
   return (
     <>
@@ -88,36 +128,43 @@ export default function MensagensPage() {
               <h1 className="text-lg font-bold">Mensagens</h1>
             </div>
             <div className="flex-1 overflow-y-auto">
-              {conversasFake.map((c) => (
-                <button
-                  key={c.id}
-                  onClick={() => { setConversaAtiva(c.id); setShowLista(false); }}
-                  className={`flex w-full items-center gap-3 border-b border-border px-4 py-3 text-left transition-colors ${
-                    conversaAtiva === c.id ? "bg-primary/5" : "hover:bg-background"
-                  }`}
-                >
-                  <div className="relative">
-                    <div className={`flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br ${avatarGradient(c.nome)} text-xs font-bold text-white shadow-md`}>
-                      {c.avatar}
-                    </div>
-                    {c.online && (
-                      <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-surface bg-emerald-500" />
-                    )}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-semibold">{c.nome}</span>
-                      <span className="text-[10px] text-muted">{c.tempo}</span>
-                    </div>
-                    <p className="truncate text-xs text-muted">{c.ultimaMensagem}</p>
-                  </div>
-                  {c.naoLidas > 0 && (
-                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white">
-                      {c.naoLidas}
-                    </span>
-                  )}
-                </button>
-              ))}
+              {loading ? (
+                <div className="flex justify-center py-10">
+                  <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                </div>
+              ) : conversas.length === 0 ? (
+                <div className="px-4 py-10 text-center">
+                  <p className="text-sm text-muted">Nenhuma conversa ainda</p>
+                  <p className="mt-1 text-xs text-muted">Compre um serviço para iniciar uma conversa</p>
+                </div>
+              ) : (
+                conversas.map((c) => {
+                  const outro = getOutro(c);
+                  const initials = outro.nome?.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase() || "?";
+                  return (
+                    <button
+                      key={c.id}
+                      onClick={() => { setConversaAtiva(c.id); setShowLista(false); }}
+                      className={`flex w-full items-center gap-3 border-b border-border px-4 py-3 text-left transition-colors ${
+                        conversaAtiva === c.id ? "bg-primary/5" : "hover:bg-background"
+                      }`}
+                    >
+                      <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${avatarGradient(outro.nome || "")} text-xs font-bold text-white shadow-md`}>
+                        {initials}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-semibold">{outro.nome}</span>
+                          <span className="text-[10px] text-muted">
+                            {new Date(c.updated_at).toLocaleDateString("pt-BR", { day: "2-digit", month: "short" })}
+                          </span>
+                        </div>
+                        <p className="truncate text-xs text-muted">{c.ultima_mensagem || "Nova conversa"}</p>
+                      </div>
+                    </button>
+                  );
+                })
+              )}
             </div>
           </div>
 
@@ -125,48 +172,46 @@ export default function MensagensPage() {
           <div className={`${!conversaAtiva || showLista ? "hidden sm:flex" : "flex"} flex-1 flex-col`}>
             {conversaSelecionada ? (
               <>
-                {/* Chat header */}
                 <div className="flex items-center gap-3 border-b border-border px-4 py-3">
                   <button onClick={() => setShowLista(true)} className="text-muted sm:hidden">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                     </svg>
                   </button>
-                  <div className="relative">
-                    <div className={`flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br ${avatarGradient(conversaSelecionada.nome)} text-[10px] font-bold text-white`}>
-                      {conversaSelecionada.avatar}
-                    </div>
-                    {conversaSelecionada.online && (
-                      <div className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-surface bg-emerald-500" />
-                    )}
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold">{conversaSelecionada.nome}</p>
-                    <p className="text-[10px] text-muted">{conversaSelecionada.online ? "Online" : "Offline"}</p>
-                  </div>
+                  {(() => {
+                    const outro = getOutro(conversaSelecionada);
+                    const initials = outro.nome?.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase() || "?";
+                    return (
+                      <>
+                        <div className={`flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br ${avatarGradient(outro.nome || "")} text-[10px] font-bold text-white`}>
+                          {initials}
+                        </div>
+                        <p className="text-sm font-semibold">{outro.nome}</p>
+                      </>
+                    );
+                  })()}
                 </div>
 
-                {/* Messages */}
                 <div className="flex-1 overflow-y-auto p-4">
                   <div className="space-y-3">
                     {mensagens.map((m) => (
-                      <div key={m.id} className={`flex ${m.de === "eu" ? "justify-end" : "justify-start"}`}>
+                      <div key={m.id} className={`flex ${m.sender_id === userId ? "justify-end" : "justify-start"}`}>
                         <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 ${
-                          m.de === "eu"
+                          m.sender_id === userId
                             ? "bg-primary text-white"
                             : "bg-surface border border-border"
                         }`}>
                           <p className="text-sm">{m.texto}</p>
-                          <p className={`mt-1 text-right text-[10px] ${m.de === "eu" ? "text-white/60" : "text-muted"}`}>
-                            {m.hora}
+                          <p className={`mt-1 text-right text-[10px] ${m.sender_id === userId ? "text-white/60" : "text-muted"}`}>
+                            {new Date(m.created_at).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
                           </p>
                         </div>
                       </div>
                     ))}
+                    <div ref={messagesEndRef} />
                   </div>
                 </div>
 
-                {/* Input */}
                 <div className="border-t border-border p-4">
                   <div className="flex items-center gap-2">
                     <input
@@ -191,7 +236,7 @@ export default function MensagensPage() {
               </>
             ) : (
               <div className="flex flex-1 items-center justify-center text-sm text-muted">
-                Selecione uma conversa para começar
+                {conversas.length > 0 ? "Selecione uma conversa" : "Nenhuma conversa ainda"}
               </div>
             )}
           </div>

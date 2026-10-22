@@ -17,6 +17,9 @@ interface Profile {
   nota_media: number;
   total_vendas: number;
   total_compras: number;
+  cpf: string | null;
+  pix_tipo: string | null;
+  pix_chave: string | null;
   created_at: string;
 }
 
@@ -30,6 +33,9 @@ export default function PerfilPage() {
   const [editando, setEditando] = useState(false);
   const [nome, setNome] = useState("");
   const [bio, setBio] = useState("");
+  const [cpf, setCpf] = useState("");
+  const [pixTipo, setPixTipo] = useState("");
+  const [pixChave, setPixChave] = useState("");
   const [mensagem, setMensagem] = useState("");
 
   useEffect(() => {
@@ -53,6 +59,9 @@ export default function PerfilPage() {
         setProfile(prof);
         setNome(prof.nome);
         setBio(prof.bio || "");
+        setCpf(prof.cpf || "");
+        setPixTipo(prof.pix_tipo || "");
+        setPixChave(prof.pix_chave || "");
       }
 
       const { data: wallet } = await supabase
@@ -73,13 +82,19 @@ export default function PerfilPage() {
     setSaving(true);
     const { error } = await supabase
       .from("profiles")
-      .update({ nome, bio: bio || null })
+      .update({
+        nome,
+        bio: bio || null,
+        cpf: cpf || null,
+        pix_tipo: pixTipo || null,
+        pix_chave: pixChave || null,
+      })
       .eq("id", profile.id);
 
     if (error) {
       setMensagem("Erro ao salvar. Tente novamente.");
     } else {
-      setProfile({ ...profile, nome, bio });
+      setProfile({ ...profile, nome, bio, cpf, pix_tipo: pixTipo, pix_chave: pixChave });
       setMensagem("Perfil atualizado!");
       setEditando(false);
     }
@@ -217,6 +232,46 @@ export default function PerfilPage() {
                       />
                       <p className="mt-0.5 text-right text-[10px] text-muted">{bio.length}/200</p>
                     </div>
+                    <div className="rounded-lg border border-border bg-background p-3">
+                      <p className="mb-2 text-xs font-semibold text-muted">Dados financeiros (para saques)</p>
+                      <div className="space-y-2">
+                        <div>
+                          <label className="mb-1 block text-xs font-medium text-muted">CPF</label>
+                          <input
+                            type="text"
+                            value={cpf}
+                            onChange={(e) => setCpf(e.target.value)}
+                            placeholder="000.000.000-00"
+                            maxLength={14}
+                            className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-primary"
+                          />
+                        </div>
+                        <div>
+                          <label className="mb-1 block text-xs font-medium text-muted">Tipo de chave Pix</label>
+                          <select
+                            value={pixTipo}
+                            onChange={(e) => setPixTipo(e.target.value)}
+                            className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-primary"
+                          >
+                            <option value="">Selecione...</option>
+                            <option value="cpf">CPF</option>
+                            <option value="email">E-mail</option>
+                            <option value="telefone">Telefone</option>
+                            <option value="aleatoria">Chave aleatória</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="mb-1 block text-xs font-medium text-muted">Chave Pix</label>
+                          <input
+                            type="text"
+                            value={pixChave}
+                            onChange={(e) => setPixChave(e.target.value)}
+                            placeholder="Sua chave Pix"
+                            className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm outline-none focus:border-primary"
+                          />
+                        </div>
+                      </div>
+                    </div>
                     <div className="flex gap-2">
                       <button
                         onClick={handleSave}
@@ -230,6 +285,9 @@ export default function PerfilPage() {
                           setEditando(false);
                           setNome(profile?.nome || "");
                           setBio(profile?.bio || "");
+                          setCpf(profile?.cpf || "");
+                          setPixTipo(profile?.pix_tipo || "");
+                          setPixChave(profile?.pix_chave || "");
                         }}
                         className="rounded-lg border border-border px-4 py-2 text-xs font-semibold"
                       >
@@ -249,6 +307,12 @@ export default function PerfilPage() {
                     <p className="mt-0.5 text-xs text-muted capitalize">{profile?.tipo}</p>
                     {profile?.bio && (
                       <p className="mt-2 text-sm">{profile.bio}</p>
+                    )}
+                    {profile?.pix_chave && (
+                      <div className="mt-3 rounded-lg border border-border bg-background px-3 py-2">
+                        <p className="text-[10px] font-medium text-muted">Chave Pix ({profile.pix_tipo})</p>
+                        <p className="text-xs font-semibold">{profile.pix_chave}</p>
+                      </div>
                     )}
                     <button
                       onClick={() => setEditando(true)}

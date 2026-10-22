@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { ServicoCard } from "@/components/ServicoCard";
@@ -20,8 +20,19 @@ export default function CatalogoPage() {
     );
   };
 
+  const [ordemAleatoria, setOrdemAleatoria] = useState(servicos);
+
+  useEffect(() => {
+    const arr = [...servicos];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    setOrdemAleatoria(arr);
+  }, []);
+
   const resultado = useMemo(() => {
-    let filtrados = [...servicos];
+    let filtrados = [...ordemAleatoria];
 
     if (categoria !== "Todos") {
       filtrados = filtrados.filter((s) => s.categoria === categoria);
@@ -57,16 +68,10 @@ export default function CatalogoPage() {
       case "nota":
         filtrados.sort((a, b) => b.vendedor.nota - a.vendedor.nota);
         break;
-      default:
-        filtrados.sort((a, b) => {
-          if (a.destaque && !b.destaque) return -1;
-          if (!a.destaque && b.destaque) return 1;
-          return b.vendedor.vendas - a.vendedor.vendas;
-        });
     }
 
     return filtrados;
-  }, [categoria, tagsSelecionadas, ordenacao, busca]);
+  }, [ordemAleatoria, categoria, tagsSelecionadas, ordenacao, busca]);
 
   return (
     <>
