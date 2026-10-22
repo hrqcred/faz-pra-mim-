@@ -20,6 +20,7 @@ export default function LoginPage() {
     setLoading(true);
 
     const supabase = createClient();
+    if (!supabase) { setErro("Serviço indisponível no momento."); setLoading(false); return; }
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password: senha,
@@ -41,6 +42,7 @@ export default function LoginPage() {
 
   const handleGoogle = async () => {
     const supabase = createClient();
+    if (!supabase) return;
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {

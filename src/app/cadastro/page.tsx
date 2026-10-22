@@ -31,6 +31,7 @@ export default function CadastroPage() {
 
     setLoading(true);
     const supabase = createClient();
+    if (!supabase) { setErro("Serviço indisponível no momento."); setLoading(false); return; }
 
     const { error } = await supabase.auth.signUp({
       email,
@@ -53,6 +54,7 @@ export default function CadastroPage() {
 
   const handleGoogle = async () => {
     const supabase = createClient();
+    if (!supabase) return;
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
