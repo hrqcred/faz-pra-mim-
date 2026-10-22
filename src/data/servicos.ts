@@ -36,7 +36,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Depoimento", "Natural", "Produto"],
     categoria: "Depoimento",
-    capaImg: "https://cdn1.vintepila.com.br/arquivos/2025/11/25104848/IMG_20251122_090459153-1-scaled.jpg",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2025/11/25104848/IMG_20251122_090459153-1-300x207.jpg",
     destaque: true,
   },
   {
@@ -55,6 +55,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Entrega 6h", "Rápido", "Comercial"],
     categoria: "Vídeo Comercial",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2026/03/31132209/result_image-1-2-300x207.jpeg",
     destaque: true,
   },
   {
@@ -73,6 +74,7 @@ export const servicos: Servico[] = [
     },
     tags: ["VSL", "Anúncio", "Persuasivo"],
     categoria: "VSL",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2026/02/06114427/IMG_4110-2-2-300x207.jpg",
     destaque: true,
   },
   {
@@ -91,6 +93,7 @@ export const servicos: Servico[] = [
     },
     tags: ["24h", "iPhone", "Comercial"],
     categoria: "Vídeo Comercial",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2026/07/14122732/8FF5B382-7207-4DC2-9602-A76F80F9B416-3-300x207.jpeg",
     destaque: true,
   },
   {
@@ -109,6 +112,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Comercial", "Anúncio", "Marketing"],
     categoria: "Vídeo Comercial",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2026/02/06113832/IMG_4110-300x207.jpg",
   },
   {
     id: "6",
@@ -126,6 +130,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Propaganda", "Produto", "Prova social"],
     categoria: "Vídeo Comercial",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2026/03/03153958/IMG-20260222-WA0019-300x207.jpg",
   },
   {
     id: "7",
@@ -143,6 +148,7 @@ export const servicos: Servico[] = [
     },
     tags: ["UGC", "Prova social", "Black ads"],
     categoria: "UGC",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2025/08/07115650/01010-300x207.png",
   },
   {
     id: "8",
@@ -160,6 +166,7 @@ export const servicos: Servico[] = [
     },
     tags: ["UGC", "12h", "Natural"],
     categoria: "UGC",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2026/09/21141642/IMG_1518-300x207.jpeg",
     destaque: true,
   },
   {
@@ -178,6 +185,7 @@ export const servicos: Servico[] = [
     },
     tags: ["4 línguas", "Internacional", "Comercial"],
     categoria: "Vídeo Comercial",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2026/01/13094634/Copy-of-Copy-of-Copy-of-High-QualityTra-300x207.png",
   },
   {
     id: "10",
@@ -195,6 +203,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Propaganda", "Cenário clean", "Edição inclusa"],
     categoria: "Vídeo Comercial",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2026/06/09111400/IMG_3822-300x207.jpeg",
   },
   {
     id: "11",
@@ -212,6 +221,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Propaganda", "Negócio", "24h"],
     categoria: "Vídeo Comercial",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2025/09/17203213/WhatsApp-Image-2025-09-17-at-20.31.26-300x207.jpeg",
   },
   {
     id: "12",
@@ -229,6 +239,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Natural", "Autêntico", "Produto"],
     categoria: "Depoimento",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2024/09/12213448/IMG-20240912-WA0115-300x207.jpg",
   },
   {
     id: "13",
@@ -246,6 +257,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Empresa", "Propaganda", "Roteiro"],
     categoria: "Vídeo Comercial",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2023/09/01214436/WhatsApp-Image-2023-08-31-at-02.12.35-300x207.jpeg",
   },
   {
     id: "14",
@@ -263,6 +275,7 @@ export const servicos: Servico[] = [
     },
     tags: ["12h", "Comercial", "Edição inclusa"],
     categoria: "Vídeo Comercial",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2025/10/20174305/IMG_20250708_141220-1-2-300x207.jpg",
   },
   {
     id: "15",
@@ -280,6 +293,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Espanhol", "24h", "Internacional"],
     categoria: "Vídeo Comercial",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2025/12/03152641/IMG_8108-300x207.jpeg",
   },
   {
     id: "16",
@@ -297,6 +311,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Bilíngue", "Espanhol", "Português"],
     categoria: "Vídeo Comercial",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2023/03/20143548/C62E2354-820B-41AF-9AC8-573C8EFF5144-300x207.jpeg",
   },
   {
     id: "17",
@@ -314,6 +329,7 @@ export const servicos: Servico[] = [
     },
     tags: ["24h", "Rápido", "Premium"],
     categoria: "Vídeo Comercial",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2025/08/13090813/Vinte-Pila-2-300x207.png",
   },
   {
     id: "18",
@@ -331,6 +347,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Super vídeo", "Cenário clean", "24h"],
     categoria: "Vídeo Comercial",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2026/10/15221203/0uox5GdAM2zE-Miniatura-para-Youtube-Capa-de-V%C3%ADdeo-para-canal-300x207.png",
   },
   {
     id: "19",
@@ -348,6 +365,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Redes sociais", "Vertical", "Legendas"],
     categoria: "Vídeo Comercial",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2025/12/10143247/WhatsApp-Image-2025-12-10-at-18.30.29-3-300x207.jpeg",
   },
   {
     id: "20",
@@ -365,6 +383,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Comercial", "Conversão", "Roteiro"],
     categoria: "Vídeo Comercial",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2026/09/23101714/Vintepila.com_.br-Rafael-mendon%C3%A7a-comercial-300x207.png",
   },
   {
     id: "21",
@@ -382,6 +401,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Anúncios pagos", "Pós-produção", "Comercial"],
     categoria: "Vídeo Comercial",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2023/03/04114959/93604488_2918695051500860_1849688547183820800_o-300x207.jpg",
   },
   {
     id: "22",
@@ -399,6 +419,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Espontâneo", "Natural", "Prova social"],
     categoria: "Depoimento",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2022/10/07070211/InShot_20221007_070057175-300x207.jpg",
   },
   {
     id: "23",
@@ -416,6 +437,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Depoimento", "Promoção", "Natural"],
     categoria: "Depoimento",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2026/10/09115516/ChatGPT-Image-19-de-jan.-de-2026-10_28_19-300x207.png",
   },
   {
     id: "24",
@@ -433,6 +455,7 @@ export const servicos: Servico[] = [
     },
     tags: ["UGC", "TikTok", "Reels"],
     categoria: "UGC",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2026/07/20202515/3-3-35-300x207.png",
   },
   {
     id: "25",
@@ -450,6 +473,7 @@ export const servicos: Servico[] = [
     },
     tags: ["UGC", "24h", "Urgente"],
     categoria: "UGC",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2026/10/03212115/558d27e4-bf4a-4858-9827-ef42cacbbf3d-300x207.png",
   },
   {
     id: "26",
@@ -467,6 +491,7 @@ export const servicos: Servico[] = [
     },
     tags: ["UGC", "Humanizado", "Tráfego pago"],
     categoria: "UGC",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2026/07/13103434/84FDAD6C-7CDB-4682-A223-D1BAF86177D4-1-300x207.jpg",
   },
   {
     id: "27",
@@ -484,6 +509,7 @@ export const servicos: Servico[] = [
     },
     tags: ["UGC", "VSL", "Criativo"],
     categoria: "VSL",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2025/05/10220914/01010-300x207.png",
   },
   {
     id: "28",
@@ -501,6 +527,7 @@ export const servicos: Servico[] = [
     },
     tags: ["UGC", "Depoimento", "Espontâneo"],
     categoria: "Depoimento",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2026/08/10151223/IMG_7997-300x207.jpeg",
   },
   {
     id: "29",
@@ -518,6 +545,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Black ads", "Alta conversão", "Criativo"],
     categoria: "UGC",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2025/05/10220914/01010-300x207.png",
   },
   {
     id: "30",
@@ -572,6 +600,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Narração", "Locução", "Masterização", "24h"],
     categoria: "Narração",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2021/08/13174431/N%C3%ADvel-Ouro-300x207.png",
     destaque: true,
   },
   {
@@ -590,6 +619,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Narração", "Feminina", "Institucional"],
     categoria: "Narração",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2026/02/10070806/Snapchat-11559521902-2-300x207.jpg",
   },
   {
     id: "34",
@@ -607,6 +637,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Locução", "Premium", "Estúdio"],
     categoria: "Narração",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2024/12/09104604/V-300x207.png",
   },
   {
     id: "35",
@@ -624,6 +655,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Narradora", "Dubladora", "Locutora"],
     categoria: "Narração",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2025/10/30151436/AIDrawing_251030_37d442cf-b313-4a81-b4ce-f89b15779c97_0_MiriCanvas-300x207.png",
   },
   {
     id: "36",
@@ -641,6 +673,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Edição", "Reels", "TikTok", "Shorts"],
     categoria: "Vídeo Editado",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2025/10/30162454/edicao-de-videos-capa-300x207.jpg",
   },
   {
     id: "37",
@@ -658,6 +691,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Edição longa", "YouTube", "Color grading"],
     categoria: "Vídeo Editado",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2024/12/04103549/o-que-faz-um-editor-de-video-1024x536-1-300x207.jpg",
   },
   {
     id: "38",
@@ -675,6 +709,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Edição 48h", "Efeitos", "Finalização"],
     categoria: "Vídeo Editado",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2025/04/04174233/EDITING-VIDEO-300x207.png",
   },
   {
     id: "39",
@@ -692,6 +727,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Reels", "TikTok", "Shorts", "Viral"],
     categoria: "Vídeo Editado",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2026/04/27103509/ChatGPT-Image-27-de-abr.-de-2026-10_34_27-300x207.png",
   },
   {
     id: "40",
@@ -709,6 +745,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Videomaker", "Produção completa", "Negócio"],
     categoria: "Vídeo Comercial",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2024/09/12064516/IMG_20240827_172435-2-300x207.jpg",
   },
   {
     id: "41",
@@ -726,6 +763,7 @@ export const servicos: Servico[] = [
     },
     tags: ["App", "Demo", "Tela"],
     categoria: "Vídeo Comercial",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2025/08/13090813/Vinte-Pila-2-300x207.png",
   },
   {
     id: "42",
@@ -743,6 +781,7 @@ export const servicos: Servico[] = [
     },
     tags: ["UGC", "TikTok", "Reels", "Trending"],
     categoria: "UGC",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2026/08/10151223/IMG_7997-300x207.jpeg",
   },
   {
     id: "43",
@@ -760,6 +799,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Depoimento", "Sincero", "Empático"],
     categoria: "Depoimento",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2026/10/09115516/ChatGPT-Image-19-de-jan.-de-2026-10_28_19-300x207.png",
   },
   {
     id: "44",
@@ -777,6 +817,7 @@ export const servicos: Servico[] = [
     },
     tags: ["Comercial", "Produto", "200+ vendas"],
     categoria: "Vídeo Comercial",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2022/06/25200648/20220612_115506-1-300x207.jpg",
   },
   {
     id: "45",
@@ -794,6 +835,7 @@ export const servicos: Servico[] = [
     },
     tags: ["IA", "5 vídeos", "Moderno"],
     categoria: "Vídeo Editado",
+    capaImg: "https://cdn1.vintepila.com.br/arquivos/2026/09/17185711/IMG_3235-300x207.png",
   },
 ];
 
