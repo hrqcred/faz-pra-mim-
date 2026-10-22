@@ -44,6 +44,7 @@ export function ServicoCard({ servico }: { servico: Servico }) {
             alt={servico.titulo}
             className="h-full w-full object-cover"
             loading="lazy"
+            referrerPolicy="no-referrer"
           />
         ) : (
           <div className="flex h-full items-center justify-center p-6">
@@ -54,6 +55,7 @@ export function ServicoCard({ servico }: { servico: Servico }) {
                   alt={servico.vendedor.nome}
                   className="mx-auto mb-2 h-16 w-16 rounded-full object-cover shadow-lg"
                   loading="lazy"
+                  referrerPolicy="no-referrer"
                 />
               ) : (
                 <div className={`mx-auto mb-2 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br ${avatarGradient(servico.vendedor.nome)} text-xl font-bold text-white shadow-lg`}>
@@ -71,7 +73,7 @@ export function ServicoCard({ servico }: { servico: Servico }) {
         )}
         <div className="absolute bottom-2 left-2 flex items-center gap-1.5 rounded-full bg-black/60 px-2 py-1 backdrop-blur-sm">
           {servico.vendedor.fotoUrl ? (
-            <img src={servico.vendedor.fotoUrl} alt="" className="h-5 w-5 rounded-full object-cover" loading="lazy" />
+            <img src={servico.vendedor.fotoUrl} alt="" className="h-5 w-5 rounded-full object-cover" loading="lazy" referrerPolicy="no-referrer" />
           ) : (
             <div className={`flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br ${avatarGradient(servico.vendedor.nome)} text-[8px] font-bold text-white`}>
               {servico.vendedor.avatar}

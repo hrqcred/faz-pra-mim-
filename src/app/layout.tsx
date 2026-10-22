@@ -16,6 +16,7 @@ export const metadata: Metadata = {
   title: "FPM — FazPraMim | Criativos, VSLs e Depoimentos em Vídeo",
   description:
     "Marketplace de vídeos criativos, VSLs e depoimentos pessoais. Conectamos quem precisa de vídeos que vendem com quem grava com qualidade.",
+  referrer: "no-referrer",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
